@@ -24,7 +24,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.marioscalasm.hsa.architecture.exception.ApplicationException;
 import me.marioscalasm.hsa.architecture.exception.ResourceNotFoundException;
-import me.marioscalasm.hsa.architecture.exception.SelfDescribingException;
 
 @Getter
 @RequiredArgsConstructor
@@ -76,12 +75,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(value = { ApplicationException.class })
     protected ResponseEntity<Object> handleApplicationException(ApplicationException ex, WebRequest request) {
-        String errorMessage = "";
-        if (ex instanceof SelfDescribingException) {
-            errorMessage = ((SelfDescribingException) ex).getMessage(messageSource, request.getLocale());
-        } else {
-            errorMessage = messageSource.getMessage(ex.getMessage(), null, request.getLocale());
-        }
+        String errorMessage = messageSource.getMessage(ex.getMessage(), null, request.getLocale());
 
         return handleExceptionInternal(ex, errorMessage, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
